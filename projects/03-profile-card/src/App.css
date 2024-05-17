@@ -1,0 +1,31 @@
+.card-container {
+  margin: 50px;
+  border: 3px solid black;
+  width: 400px;
+}
+
+.profile-pic {
+  width: 100%;
+}
+
+.card-body {
+  padding: 20px 20px 0px 20px;
+}
+
+.card-header {
+  margin: 0;
+}
+
+.skills {
+  padding: 0px 20px 20px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.skill {
+  border-radius: 5px;
+  padding: 0px 10px;
+  font-weight: 600;
+}
