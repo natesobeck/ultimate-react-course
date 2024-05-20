@@ -16,15 +16,17 @@ function App() {
 }
 
 function Pizza({ pizza }) {
+
+
   return (
-    <div className="pizza">
+    <li className={`pizza ${pizza.soldOut ? 'sold-out' : null}`}>
       <div>
         <img src={pizza.photoName} alt={pizza.name}/>
         <h3>{pizza.name}</h3>
         <p>{pizza.ingredients}</p>
-        <span>{pizza.price}</span>
+        <span>{pizza.soldOut ? 'SOLD OUT' : pizza.price}</span>
       </div>
-    </div>
+    </li>
   )
 }
 
@@ -47,11 +49,12 @@ function Footer() {
 function Menu() {
   return (
     <div className="menu">
-      <div className="pizzas">
+      <h2>Our Menu</h2>
+      <ul className="pizzas">
         {pizzaData.map(pizza => (
           <Pizza pizza={pizza} key={pizza.name} />
         ))}
-      </div>
+      </ul>
       <button className="btn order">PLACE ORDER</button>
     </div>
   )
