@@ -1,0 +1,108 @@
+.app {
+  display: flex;
+  justify-content: center;
+  padding: 25px;
+}
+
+.friend-list {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 10px;
+  gap: 15px;
+  width: 100%;
+}
+
+.profile-img {
+  border-radius: 50%;
+}
+
+.btn {
+  margin-left: auto;
+  font-weight: bold;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+}
+
+.friend-list > .btn {
+  margin-top: 20px;
+}
+
+.name {
+  font-weight: bold;
+  margin: unset;
+}
+
+.message {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background-color: rgb(225, 225, 225);
+}
+
+.friend:hover {
+  background-color: rgb(250, 250, 250);
+}
+
+.selected {
+  background-color: rgb(250, 250, 250);
+  border-radius: 5px;
+}
+
+.red {
+  color: darkred;
+}
+
+.green {
+  color: green;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(250, 250, 250);
+  padding: 10px;
+  border-radius: 5px;
+  width: 350px;
+}
+
+.form span {
+  display: flex;
+  padding: 5px 0px;
+}
+
+.form > span > input, .form > span > select {
+  margin-left: auto;
+  width: 150px;
+}
+
+select {
+  padding-left: 5px;
+}
+
+.form .btn {
+  width: 153px;
+  margin-top: 5px;
+}
+
+.bill-split {
+  padding: 25px;
+  margin-left: 30px;
+  height: 100%;
+}
+
+.header {
+  text-transform: uppercase;
+}
