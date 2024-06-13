@@ -26,14 +26,25 @@ export default function App() {
     setSelectedId(null)
   }
 
+  function handleAddWatchedMovie(movie) {
+    setWatched((watched) => [...watched, movie])
+  }
+
+  function handleDeleteWatched(id) {
+    setWatched(watched.filter((movie) => movie.imdbID !== id))
+  }
+
   useEffect(() => {
+    const controller = new AbortController()
+
     async function getMovies() {
       try {
         setError("")
         setIsLoading(true)
 
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         )
 
         if (!res.ok)
@@ -44,9 +55,10 @@ export default function App() {
         if (data.Response === "False") throw new Error("Movie not found")
 
         setMovies(data.Search)
+        setError("")
       } catch (error) {
         console.error(error.message)
-        setError(error.message)
+        if (error.name !== "AbortError") setError(error.message)
       } finally {
         setIsLoading(false)
       }
@@ -59,6 +71,10 @@ export default function App() {
     }
 
     getMovies()
+
+    return function () {
+      controller.abort()
+    }
   }, [query])
 
   return (
@@ -84,11 +100,16 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddWatchedMovie={handleAddWatchedMovie}
+              watched={watched}
             />
           ) : (
             <>
               <Summary watched={watched} />
-              <WatchedMovies watched={watched} />
+              <WatchedMovies
+                watched={watched}
+                onDeleteWatched={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
@@ -200,9 +221,21 @@ function Movie({ movie, onSelectMovie }) {
   )
 }
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({
+  selectedId,
+  onCloseMovie,
+  onAddWatchedMovie,
+  watched,
+}) {
   const [movie, setMovie] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [userRating, setUserRating] = useState("")
+  const isWatched = watched
+    .map((watchedMovie) => watchedMovie.imdbID)
+    .includes(selectedId)
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating
 
   const {
     Title: title,
@@ -217,9 +250,24 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Genre: genre,
   } = movie
 
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+      userRating,
+    }
+    onAddWatchedMovie(newWatchedMovie)
+    onCloseMovie()
+  }
+
   useEffect(() => {
     async function getMovieDetails() {
       setIsLoading(true)
+      setUserRating("")
       const res = await fetch(
         `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
       )
@@ -229,6 +277,14 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     }
     getMovieDetails()
   }, [selectedId])
+
+  useEffect(() => {
+    if (!title) return
+    document.title = `Movie | ${title}`
+    return function () {
+      document.title = "usePopcorn"
+    }
+  }, [title])
 
   return (
     <div className="details">
@@ -256,7 +312,27 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button
+                      className="btn-add"
+                      onClick={(movie) => handleAdd(movie)}
+                    >
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>
+                  You rated this {watchedUserRating} <span>⭐️</span>
+                </p>
+              )}
             </div>
             <p>
               <em>{plot}</em>
@@ -270,34 +346,46 @@ function MovieDetails({ selectedId, onCloseMovie }) {
   )
 }
 
-function WatchedMovies({ watched }) {
+function WatchedMovies({ watched, onDeleteWatched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        <WatchedMovie movie={movie} key={movie.imdbID} />
+        <WatchedMovie
+          movie={movie}
+          key={movie.imdbID}
+          onDeleteWatched={onDeleteWatched}
+        />
       ))}
     </ul>
   )
 }
 
-function WatchedMovie({ movie }) {
+function WatchedMovie({ movie, onDeleteWatched }) {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
           <span>{movie.imdbRating}</span>
         </p>
-        <p>
-          <span>🌟</span>
-          <span>{movie.userRating}</span>
-        </p>
+        {!isNaN(movie.userRating) && (
+          <p>
+            <span>🌟</span>
+            <span>{movie.userRating}</span>
+          </p>
+        )}
         <p>
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
+        <button
+          className="btn-delete"
+          onClick={() => onDeleteWatched(movie.imdbID)}
+        >
+          X
+        </button>
       </div>
     </li>
   )
@@ -320,10 +408,12 @@ function Summary({ watched }) {
           <span>⭐️</span>
           <span>{avgImdbRating}</span>
         </p>
-        <p>
-          <span>🌟</span>
-          <span>{avgUserRating}</span>
-        </p>
+        {!isNaN(avgUserRating) && (
+          <p>
+            <span>🌟</span>
+            <span>{avgUserRating}</span>
+          </p>
+        )}
         <p>
           <span>⏳</span>
           <span>{avgRuntime} min</span>
