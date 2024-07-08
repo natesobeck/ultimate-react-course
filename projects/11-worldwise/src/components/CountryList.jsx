@@ -2,8 +2,11 @@ import CountryItem from "./CountryItem"
 import styles from "./CountryList.module.css"
 import Spinner from "./Spinner"
 import Message from "./Message"
+import { useCities } from "../contexts/CitiesContext"
 
-const CountryList = ({ cities, isLoading }) => {
+const CountryList = () => {
+  const {cities, isLoading} = useCities()
+
   if (isLoading) return <Spinner />
 
   if (!cities.length)
@@ -22,7 +25,7 @@ const CountryList = ({ cities, isLoading }) => {
   return (
     <div className={styles.countryList}>
       {countries.map((country) => (
-        <CountryItem country={country} />
+        <CountryItem country={country} key={country.country}/>
       ))}
     </div>
   )
