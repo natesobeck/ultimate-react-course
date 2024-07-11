@@ -1,8 +1,12 @@
 import { NavLink } from "react-router-dom"
 import styles from "./PageNav.module.css"
 import Logo from "./Logo"
+import { useAuth } from "../contexts/FakeAuthContext"
+import Button from "./Button"
 
 const PageNav = () => {
+  const {user, logout} = useAuth()
+
   return (
     <nav className={styles.nav}>
       <Logo />
@@ -14,11 +18,13 @@ const PageNav = () => {
         <li>
           <NavLink to="/product">Product</NavLink>
         </li>
-        <li>
+        {!user && <li>
           <NavLink to="/login" className={styles.ctaLink}>
             Login
           </NavLink>
-        </li>
+        </li>}
+        {user && <li>
+          <Button type='primary' onClick={logout}>Logout</Button></li>}
       </ul>
     </nav>
   )

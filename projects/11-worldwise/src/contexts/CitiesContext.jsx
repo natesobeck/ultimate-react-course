@@ -23,17 +23,19 @@ function reducer(state, action) {
         isLoading: false,
         currentCity: action.payload,
       }
-    case "cities/created":
+    case "city/created":
       return {
         ...state,
         isLoading: false,
         cities: [...state.cities, action.payload],
       }
-    case "cities/deleted":
+    case "city/deleted":
       return {
         ...state,
         isLoading: false,
-        cities: [...action.payload],
+        cities: state.cities.filter(
+          (city) => city.id !== action.payload
+        ),
       }
     case "rejected":
       return { ...state, isLoading: false, error: action.payload }
@@ -54,9 +56,6 @@ function CitiesProvider({ children }) {
     reducer,
     initialState
   )
-  // const [cities, setCities] = useState([])
-  // const [isLoading, setIsLoading] = useState(false)
-  // const [currentCity, setCurrentCity] = useState({})
 
   useEffect(() => {
     async function fetchCities() {
@@ -76,6 +75,8 @@ function CitiesProvider({ children }) {
   }, [])
 
   async function getCity(id) {
+    if (Number(id) === currentCity.id) return 
+
     dispatch({ type: "loading" })
     try {
       const res = await fetch(`${BASE_URL}/cities/${id}`)
@@ -101,7 +102,7 @@ function CitiesProvider({ children }) {
       })
       const data = await res.json()
 
-      dispatch({ type: "cities/created", payload: data })
+      dispatch({ type: "city/created", payload: data })
     } catch {
       dispatch({
         type: "rejected",
@@ -117,10 +118,7 @@ function CitiesProvider({ children }) {
         method: "DELETE",
       })
       const deletedCityData = await res.json()
-      const filteredCities = cities.filter(
-        (city) => city.id !== deletedCityData.id
-      )
-      dispatch({ type: "cities/deleted", payload: filteredCities })
+      dispatch({ type: "city/deleted", payload: deletedCityData.id })
     } catch {
       dispatch({
         type: "rejected",
