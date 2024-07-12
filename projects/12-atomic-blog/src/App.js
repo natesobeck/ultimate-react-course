@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import createRandomPost from "./createRandomPost"
 import { PostProvider, PostContext, usePosts } from "./PostContext"
+import Test from "./Test"
 
 function App() {
   const [isFakeDark, setIsFakeDark] = useState(false)
