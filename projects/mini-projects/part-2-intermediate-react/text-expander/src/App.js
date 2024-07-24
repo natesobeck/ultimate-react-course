@@ -38,31 +38,36 @@ function TextExpander({
   children,
   expandButtonText = "Show more",
   collapseButtonText = "Show less",
-  buttonColor = 'blue',
+  buttonColor = "blue",
   collapsedNumWords = 10,
-  className = '',
-  expanded
+  className = "",
+  expanded,
 }) {
-  const [expand, setExpand] = useState(expanded ? true : false)
+  const [expand, setExpand] = useState(expanded)
 
   const buttonStyle = {
     color: buttonColor,
-    border: 'none',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    paddingLeft: '10px',
-    cursor: 'pointer'
+    border: "none",
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    paddingLeft: "10px",
+    cursor: "pointer",
   }
 
   const mainStyle = {
-    marginBottom: '10px'
+    marginBottom: "10px",
   }
 
-  const collapsedText = `${children.split(' ').slice(0, collapsedNumWords).join(' ')}...`
+  const collapsedText = `${children
+    .split(" ")
+    .slice(0, collapsedNumWords)
+    .join(" ")}...`
 
   return (
     <div className={className} style={mainStyle}>
-      {expand ? children : collapsedText}
-      <button style={buttonStyle} onClick={() => setExpand(!expand)}>{expand ? collapseButtonText : expandButtonText}</button>
+      <span>{expand ? children : collapsedText}</span>
+      <button style={buttonStyle} onClick={() => setExpand(!expand)}>
+        {expand ? collapseButtonText : expandButtonText}
+      </button>
     </div>
   )
 }

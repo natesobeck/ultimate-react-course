@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useMemo, useState } from "react"
 import createRandomPost from "./createRandomPost"
 
 const PostContext = createContext()
@@ -27,25 +27,26 @@ const PostProvider = ({ children }) => {
     setPosts([])
   }
 
-  return (
-    <PostContext.Provider
-      value={{
-        posts: searchedPosts,
-        onClearPosts: handleClearPosts,
-        onAddPost: handleAddPost,
-        searchQuery,
-        setSearchQuery,
-      }}
-    >
-      {children}
-    </PostContext.Provider>
-  )
+  const value = useMemo(() => {
+    return {
+      posts: searchedPosts,
+      onClearPosts: handleClearPosts,
+      onAddPost: handleAddPost,
+      searchQuery,
+      setSearchQuery,
+    }
+  }, [searchedPosts, searchQuery])
+
+  return <PostContext.Provider value={value}>{children}</PostContext.Provider>
 }
 
 function usePosts() {
   const context = useContext(PostContext)
-  if (context === undefined) throw new Error("PostContext was used outside of PostProvider so values are undefined")
+  if (context === undefined)
+    throw new Error(
+      "PostContext was used outside of PostProvider so values are undefined"
+    )
   return context
 }
 
-export {PostProvider, usePosts}
+export { PostProvider, usePosts }

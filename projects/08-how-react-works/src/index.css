@@ -39,6 +39,7 @@ button {
   font-weight: bold;
   color: #364fc7;
   transition: all 0.3s;
+  background-color: rgba(54, 79, 199, .2);
 }
 
 .tab.active,
@@ -48,7 +49,7 @@ button {
 }
 
 .tab-content {
-  background-color: #edf2ff;
+  background-color: rgba(54, 79, 199, .2);;
   padding: 32px;
   border-radius: 12px;
 }

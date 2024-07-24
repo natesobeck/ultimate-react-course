@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 
 const content = [
   {
@@ -16,18 +16,18 @@ const content = [
     details:
       "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
   },
-];
+]
 
 export default function App() {
   return (
     <div>
       <Tabbed content={content} />
     </div>
-  );
+  )
 }
 
 function Tabbed({ content }) {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(0)
 
   return (
     <div>
@@ -39,12 +39,15 @@ function Tabbed({ content }) {
       </div>
 
       {activeTab <= 2 ? (
-        <TabContent item={content.at(activeTab)} />
+        <TabContent
+          item={content.at(activeTab)}
+          key={content.at(activeTab).summary}
+        />
       ) : (
         <DifferentContent />
       )}
     </div>
-  );
+  )
 }
 
 function Tab({ num, activeTab, onClick }) {
@@ -55,17 +58,28 @@ function Tab({ num, activeTab, onClick }) {
     >
       Tab {num + 1}
     </button>
-  );
+  )
 }
 
-console.log(<Tab/>)
-
 function TabContent({ item }) {
-  const [showDetails, setShowDetails] = useState(true);
-  const [likes, setLikes] = useState(0);
+  const [showDetails, setShowDetails] = useState(true)
+  const [likes, setLikes] = useState(0)
 
   function handleInc() {
-    setLikes(likes + 1);
+    setLikes(likes + 1)
+  }
+
+  function handleTripleInc() {
+    setLikes(likes + 3)
+  }
+
+  function handleUndo() {
+    setLikes(0)
+    setShowDetails(true)
+  }
+
+  function handleUndoLater() {
+    setTimeout(handleUndo, 2000)
   }
 
   return (
@@ -81,16 +95,16 @@ function TabContent({ item }) {
         <div className="hearts-counter">
           <span>{likes} ❤️</span>
           <button onClick={handleInc}>+</button>
-          <button>+++</button>
+          <button onClick={handleTripleInc}>+++</button>
         </div>
       </div>
 
       <div className="tab-undo">
-        <button>Undo</button>
-        <button>Undo in 2s</button>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleUndoLater}>Undo in 2s</button>
       </div>
     </div>
-  );
+  )
 }
 
 function DifferentContent() {
@@ -98,5 +112,5 @@ function DifferentContent() {
     <div className="tab-content">
       <h4>I'm a DIFFERENT tab, so I reset state 💣💥</h4>
     </div>
-  );
+  )
 }

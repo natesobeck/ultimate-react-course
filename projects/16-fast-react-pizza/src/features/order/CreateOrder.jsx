@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../ui/Button";
+import { useSelector } from "react-redux";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -43,6 +44,7 @@ function CreateOrder() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const formErrors = useActionData();
+  const username = useSelector((state) => state.user.username);
   // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
 
@@ -53,14 +55,18 @@ function CreateOrder() {
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input type="text" name="customer" required className="input grow" />
+          <input defaultValue={username} type="text" name="customer" required className="input grow" />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Phone number</label>
           <div className="grow">
             <input type="tel" name="phone" required className="input w-full" />
-            {formErrors?.phone && <p className="mt-2 text-xs text-red-700 rounded-md bg-red-100 p-2">{formErrors.phone}</p>}
+            {formErrors?.phone && (
+              <p className="mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700">
+                {formErrors.phone}
+              </p>
+            )}
           </div>
         </div>
 
@@ -85,7 +91,9 @@ function CreateOrder() {
             // value={withPriority}
             // onChange={(e) => setWithPriority(e.target.checked)}
           />
-          <label htmlFor="priority" className="font-medium">This is a priority order. Additional charge will apply.</label>
+          <label htmlFor="priority" className="font-medium">
+            This is a priority order. Additional charge will apply.
+          </label>
         </div>
 
         <div>

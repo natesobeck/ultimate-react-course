@@ -12,55 +12,59 @@ const initialState = {
 }
 
 function reducer(state, action) {
-  switch (action.type) {
-    case "openAccount":
-      return {
-        ...initialState,
-        status: "open",
-        balance: 500,
-      }
-
-    case "deposit":
-      return {
-        ...state,
-        balance: state.balance + 150,
-      }
-
-    case "withdraw":
-      return {
-        ...state,
-        balance: state.balance >= 50 ? state.balance - 50 : state.balance,
-      }
-
-    case "getLoan":
-      return {
-        ...state,
-        loan: state.loan === 0 ? state.loan + 5000 : state.loan,
-      }
-
-    case "payLoan":
-      const canPayLoan = state.balance >= state.loan
-
-      return {
-        ...state,
-        balance: canPayLoan ? state.balance - state.loan : state.balance,
-        loan: canPayLoan ? 0 : state.loan,
-      }
-
-    case "closeAccount":
-      if (state.balance === 0 && state.loan === 0) {
+  if (state.status !== "open" && action.type !== "openAccount") return state
+    switch (action.type) {
+      case "openAccount":
         return {
           ...initialState,
+          status: "open",
+          balance: 500,
         }
-      } else {
-        return {
-          ...state
-        }
-      }
 
-    default:
-      throw new Error("Action unknown")
-  }
+      case "deposit":
+        if (state.status === "open") return state
+
+        return {
+          ...state,
+          balance: state.balance + action.payload,
+        }
+
+      case "withdraw":
+        return {
+          ...state,
+          balance:
+            state.balance >= action.payload
+              ? state.balance - action.payload
+              : state.balance,
+        }
+
+      case "getLoan":
+        return {
+          ...state,
+          loan: state.loan === 0 ? state.loan + action.payload : state.loan,
+          balance:
+            state.loan === 0 ? state.balance + action.payload : state.balance,
+        }
+
+      case "payLoan":
+        const canPayLoan = state.balance >= state.loan
+
+        return {
+          ...state,
+          balance: canPayLoan ? state.balance - state.loan : state.balance,
+          loan: canPayLoan ? 0 : state.loan,
+        }
+
+      case "closeAccount":
+        if (state.balance === 0 && state.loan === 0) {
+          return initialState
+        } else {
+          return state
+        }
+
+      default:
+        throw new Error("Action unknown")
+    }
 }
 
 function App() {

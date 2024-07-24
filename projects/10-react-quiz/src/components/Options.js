@@ -1,4 +1,7 @@
-const Options = ({ question, answer, dispatch }) => {
+import { useQuiz } from "../QuizContext"
+
+const Options = () => {
+  const { dispatch, answer, question } = useQuiz()
   const hasAnswered = answer !== null
 
   return (

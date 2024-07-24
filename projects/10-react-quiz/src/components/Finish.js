@@ -1,4 +1,8 @@
-const Finish = ({ points, totalPoints, highScore, dispatch }) => {
+import { useQuiz } from "../QuizContext"
+
+const Finish = () => {
+  const { points, totalPoints, highScore, dispatch } = useQuiz()
+
   const percentage = (points / totalPoints) * 100
 
   let emoji

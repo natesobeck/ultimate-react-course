@@ -39,11 +39,11 @@ function App() {
     <main className="card-container">
       <CardImage />
       <CardBody />
-      <section className="skills">
+      <ul className="skills">
         {skills.map(skill => (
           <Skill skill={skill} />
         ))}
-      </section>
+      </ul>
     </main>
   )
 }
@@ -66,9 +66,9 @@ function CardBody() {
 function Skill({ skill }) {
 
   return (
-    <div className="skill" style={{"background-color": `${skill.bg}`}}>
+    <li className="skill" style={{ backgroundColor: `${skill.bg}` }}>
       {`${skill.text} ${skill.emoji}`}
-    </div>
+    </li>
   )
 }
 
