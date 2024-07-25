@@ -11,6 +11,7 @@ function Cart() {
   const username = useSelector(getUser);
   const cart = useSelector(getCart);
   const dispatch = useDispatch()
+  console.log(cart)
 
   if (!cart.length) return <EmptyCart />
 
@@ -22,7 +23,7 @@ function Cart() {
 
       <ul className="mt-3 divide-y divide-stone-200 border-b">
         {cart.map((item) => (
-          <CartItem key={item.id} item={item} />
+          <CartItem key={item.pizzaId} item={item} />
         ))}
       </ul>
 

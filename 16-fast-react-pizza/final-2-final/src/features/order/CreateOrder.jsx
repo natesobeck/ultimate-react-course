@@ -41,6 +41,7 @@ function CreateOrder() {
 
   return (
     <div className="px-4 py-6">
+      <button onClick={() => dispatch(fetchAddress())}>Get Position</button>
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
 
       {/* <Form method="POST" action="/order/new"> */}
@@ -148,8 +149,6 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === 'true',
   };
-
-  console.log(order);
 
   const errors = {};
   if (!isValidPhone(order.phone))
